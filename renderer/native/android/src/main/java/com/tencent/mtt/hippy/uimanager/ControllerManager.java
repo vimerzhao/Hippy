@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.mtt.hippy.annotation.HippyController;
+import com.tencent.mtt.hippy.common.CustomViewCreatorProvider;
 import com.tencent.mtt.hippy.common.HippyArray;
 import com.tencent.mtt.hippy.dom.node.NodeProps;
 import com.tencent.mtt.hippy.modules.Promise;
@@ -171,9 +172,9 @@ public class ControllerManager {
     public View createView(@Nullable ViewGroup rootView, int id, @NonNull String className,
             @Nullable Map<String, Object> props) {
         View view = mControllerRegistry.getView(id);
-        if (view == null) {
-            HippyViewController controller = mControllerRegistry.getViewController(className);
-            view = controller.createView(rootView, id, mNativeRenderer, className, props);
+        HippyViewController controller = mControllerRegistry.getViewController(className);
+        if (view == null && rootView != null && controller != null) {
+            view = controller.createView(rootView.getContext(), id, (CustomViewCreatorProvider) mNativeRenderer, className, props);
             if (view != null) {
                 mControllerRegistry.addView(view);
             }

@@ -39,8 +39,6 @@ public interface NativeRender extends NativeRenderExceptionHandler {
     @Nullable
     ViewGroup getRootView();
 
-    Object getCustomViewCreator();
-
     String getBundlePath();
 
     @Nullable

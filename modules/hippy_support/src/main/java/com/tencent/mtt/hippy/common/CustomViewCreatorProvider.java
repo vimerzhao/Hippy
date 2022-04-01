@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.tencent.mtt.hippy.common;
 
-package com.tencent.link_supplier.proxy.renderer;
-
-public interface NativeRenderProxy extends RenderProxy {
-
-    /**
-     * Notify renderer the host life cycle {@link android.app.Activity} onResume call back
-     */
-    void onResume();
+public interface CustomViewCreatorProvider {
 
     /**
-     * Notify renderer the host life cycle {@link android.app.Activity} onPause call back
+     * return com.tencent.mtt.hippy.uimanager.HippyCustomViewCreator
      */
-    void onPause();
-
-    /**
-     * Notify renderer the root view instance delete by framework.
-     */
-    void onRootDestroy();
+    Object getCustomViewCreator();
 }

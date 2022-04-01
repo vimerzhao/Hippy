@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.tencent.mtt.hippy.common;
 
-package com.tencent.link_supplier.proxy.renderer;
+import android.content.Context;
+import android.view.View;
 
-public interface NativeRenderProxy extends RenderProxy {
+import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+public interface ViewController {
+    /**
+     * 创建一个自定义View
+     */
+    View createView(Context context, int id, @NonNull CustomViewCreatorProvider nativeRenderer,
+                    @NonNull String className, @Nullable Map<String, Object> props);
 
     /**
-     * Notify renderer the host life cycle {@link android.app.Activity} onResume call back
+     * 更新自定义View的自定义属性
      */
-    void onResume();
-
-    /**
-     * Notify renderer the host life cycle {@link android.app.Activity} onPause call back
-     */
-    void onPause();
-
-    /**
-     * Notify renderer the root view instance delete by framework.
-     */
-    void onRootDestroy();
+    void updateProps(View view, @Nullable Map<String, Object> props);
 }

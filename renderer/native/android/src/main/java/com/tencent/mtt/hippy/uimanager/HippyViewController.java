@@ -29,8 +29,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.mtt.hippy.annotation.HippyControllerProps;
+import com.tencent.mtt.hippy.common.CustomViewCreatorProvider;
 import com.tencent.mtt.hippy.common.HippyArray;
 import com.tencent.mtt.hippy.common.HippyMap;
+import com.tencent.mtt.hippy.common.ViewController;
 import com.tencent.mtt.hippy.dom.node.NodeProps;
 import com.tencent.mtt.hippy.modules.Promise;
 import com.tencent.mtt.hippy.utils.LogUtils;
@@ -53,7 +55,7 @@ import java.util.Map;
 
 @SuppressWarnings({"deprecation", "unused"})
 public abstract class HippyViewController<T extends View & HippyViewBase> implements
-        View.OnFocusChangeListener {
+        View.OnFocusChangeListener, ViewController {
 
     private static final String TAG = "HippyViewController";
 
@@ -62,23 +64,26 @@ public abstract class HippyViewController<T extends View & HippyViewBase> implem
     private boolean bUserChangeFocus = false;
 
     @SuppressWarnings("deprecation")
-    public View createView(@Nullable ViewGroup rootView, int id,
-            @NonNull NativeRender nativeRenderer, @NonNull String className,
+    @Override
+    public View createView(
+            Context context,
+            int id,
+            @NonNull CustomViewCreatorProvider provider,
+            @NonNull String className,
             @Nullable Map<String, Object> props) {
         View view = null;
-        if (rootView != null) {
-            Context context = rootView.getContext();
-            Object object = nativeRenderer.getCustomViewCreator();
-            if (object instanceof HippyCustomViewCreator) {
-                view = ((HippyCustomViewCreator) object)
-                        .createCustomView(className, context, props);
-            }
+        Object object = provider.getCustomViewCreator();
+        if (object instanceof HippyCustomViewCreator) {
+            view = ((HippyCustomViewCreator) object)
+                    .createCustomView(className, context, props);
+        }
+        if (view == null) {
+            view = createViewImpl(context, props);
             if (view == null) {
-                view = createViewImpl(context, props);
-                if (view == null) {
-                    view = createViewImpl(context);
-                }
+                view = createViewImpl(context);
             }
+        }
+        if (view != null) {
             view.setId(id);
             Map<String, Object> tagMap = NativeViewTag.createViewTag(className);
             view.setTag(tagMap);
@@ -87,6 +92,11 @@ public abstract class HippyViewController<T extends View & HippyViewBase> implem
     }
 
     public void onAfterUpdateProps(T v) {
+
+    }
+
+    @Override
+    public void updateProps(View view, @Nullable Map<String, Object> props) {
 
     }
 
