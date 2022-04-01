@@ -16,22 +16,7 @@
 
 package com.tencent.link_supplier.proxy.renderer;
 
-import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.tencent.link_supplier.LinkHelper;
-import java.util.List;
-
 public interface NativeRenderProxy extends RenderProxy {
-
-    /**
-     * Initialize the native renderer after call {@link LinkHelper} createRenderer interface.
-     *
-     * @param controllers framework instance id
-     * @param rootView the already exists root view, for example after reload in debug mode, root
-     * view will be reused.
-     */
-    void init(@Nullable List<Class<?>> controllers, @Nullable ViewGroup rootView);
 
     /**
      * Notify renderer the host life cycle {@link android.app.Activity} onResume call back

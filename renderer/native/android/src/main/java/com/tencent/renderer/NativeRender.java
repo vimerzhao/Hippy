@@ -31,15 +31,13 @@ import com.tencent.renderer.component.text.VirtualNode;
 
 import java.util.Map;
 
-public interface NativeRender extends NativeRenderExceptionHandler {
+public interface NativeRender {
 
     @NonNull
     RenderManager getRenderManager();
 
     @Nullable
     ViewGroup getRootView();
-
-    Object getCustomViewCreator();
 
     String getBundlePath();
 

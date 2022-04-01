@@ -41,7 +41,7 @@ import java.util.List;
 public class NativeRenderProvider {
 
     @NonNull
-    private final NativeRenderDelegate mRenderDelegate;
+    private final NativeRenderer mNativeRender;
     @NonNull
     private final Deserializer mDeserializer;
     @NonNull
@@ -52,8 +52,8 @@ public class NativeRenderProvider {
     private SafeHeapWriter mSafeHeapWriter;
     private final int mInstanceId;
 
-    public NativeRenderProvider(@NonNull NativeRenderDelegate renderDelegate) {
-        mRenderDelegate = renderDelegate;
+    public NativeRenderProvider(@NonNull NativeRenderer nativeRender) {
+        mNativeRender = nativeRender;
         mSerializer = new Serializer();
         mDeserializer = new Deserializer(null, new InternalizedStringTable());
         mInstanceId = onCreateNativeRenderProvider(PixelUtil.getDensity());
@@ -123,9 +123,9 @@ public class NativeRenderProvider {
     private void createNode(byte[] buffer) {
         try {
             final List<Object> list = bytesToArgument(ByteBuffer.wrap(buffer));
-            mRenderDelegate.createNode(list);
+            mNativeRender.createNode(list);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -139,9 +139,9 @@ public class NativeRenderProvider {
     private void updateNode(byte[] buffer) {
         try {
             final List<Object> list = bytesToArgument(ByteBuffer.wrap(buffer));
-            mRenderDelegate.updateNode(list);
+            mNativeRender.updateNode(list);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -154,9 +154,9 @@ public class NativeRenderProvider {
     @SuppressWarnings("unused")
     private void deleteNode(int[] ids) {
         try {
-            mRenderDelegate.deleteNode(ids);
+            mNativeRender.deleteNode(ids);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -171,9 +171,9 @@ public class NativeRenderProvider {
     @SuppressWarnings("unused")
     private void moveNode(int[] ids, int newPid, int oldPid) {
         try {
-            mRenderDelegate.moveNode(ids, newPid, oldPid);
+            mNativeRender.moveNode(ids, newPid, oldPid);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -187,9 +187,9 @@ public class NativeRenderProvider {
     private void updateLayout(byte[] buffer) {
         try {
             final List<Object> list = bytesToArgument(ByteBuffer.wrap(buffer));
-            mRenderDelegate.updateLayout(list);
+            mNativeRender.updateLayout(list);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -203,9 +203,9 @@ public class NativeRenderProvider {
     private void updateEventListener(byte[] buffer) {
         try {
             final List<Object> list = bytesToArgument(ByteBuffer.wrap(buffer));
-            mRenderDelegate.updateEventListener(list);
+            mNativeRender.updateEventListener(list);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -219,9 +219,9 @@ public class NativeRenderProvider {
     @SuppressWarnings("unused")
     private void measureInWindow(int id, long callbackId) {
         try {
-            mRenderDelegate.measureInWindow(id, callbackId);
+            mNativeRender.measureInWindow(id, callbackId);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -238,7 +238,7 @@ public class NativeRenderProvider {
     @CalledByNative
     @SuppressWarnings("unused")
     private long measure(int id, float width, int widthMode, float height, int heightMode) {
-        return mRenderDelegate.measure(id, width, widthMode, height, heightMode);
+        return mNativeRender.measure(id, width, widthMode, height, heightMode);
     }
 
     /**
@@ -254,9 +254,9 @@ public class NativeRenderProvider {
     private void callUIFunction(int id, long callbackId, String functionName, byte[] buffer) {
         try {
             final List<Object> list = bytesToArgument(ByteBuffer.wrap(buffer));
-            mRenderDelegate.callUIFunction(id, callbackId, functionName, list);
+            mNativeRender.callUIFunction(id, callbackId, functionName, list);
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -267,9 +267,9 @@ public class NativeRenderProvider {
     @SuppressWarnings("unused")
     private void endBatch() {
         try {
-            mRenderDelegate.endBatch();
+            mNativeRender.endBatch();
         } catch (NativeRenderException e) {
-            mRenderDelegate.handleRenderException(e);
+            mNativeRender.handleRenderException(e);
         }
     }
 
@@ -305,7 +305,7 @@ public class NativeRenderProvider {
                 offset += buffer.arrayOffset();
                 bytes = buffer.array();
             } catch (Exception e) {
-                mRenderDelegate.handleRenderException(e);
+                mNativeRender.handleRenderException(e);
                 return;
             }
         }
@@ -325,7 +325,7 @@ public class NativeRenderProvider {
                 offset += buffer.arrayOffset();
                 bytes = buffer.array();
             } catch (Exception e) {
-                mRenderDelegate.handleRenderException(e);
+                mNativeRender.handleRenderException(e);
                 return;
             }
         }

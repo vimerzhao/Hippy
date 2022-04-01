@@ -20,7 +20,7 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-public interface NativeRenderDelegate extends NativeRenderExceptionHandler {
+public interface NativeRenderDelegate {
 
     void createNode(@NonNull List<Object> nodeList) throws NativeRenderException;
 

@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tencent.link_supplier.proxy.renderer.RenderProxy;
 import com.tencent.mtt.hippy.annotation.HippyController;
 import com.tencent.mtt.hippy.common.HippyArray;
 import com.tencent.mtt.hippy.dom.node.NodeProps;
@@ -67,16 +68,16 @@ public class ControllerManager {
 
     private static final String TAG = "ControllerManager";
     @NonNull
-    private final NativeRender mNativeRenderer;
+    private final RenderProxy mRender;
     @NonNull
     final ControllerRegistry mControllerRegistry;
     @NonNull
     final ControllerUpdateManger<HippyViewController, View> mControllerUpdateManger;
 
-    public ControllerManager(@NonNull NativeRender nativeRenderer) {
-        mNativeRenderer = nativeRenderer;
-        mControllerRegistry = new ControllerRegistry(nativeRenderer);
-        mControllerUpdateManger = new ControllerUpdateManger(nativeRenderer);
+    public ControllerManager(@NonNull RenderProxy render) {
+        mRender = render;
+        mControllerRegistry = new ControllerRegistry(render);
+        mControllerUpdateManger = new ControllerUpdateManger(render);
     }
 
     public void init(@Nullable List<Class<?>> controllers) {
@@ -86,7 +87,10 @@ public class ControllerManager {
     }
 
     public RenderManager getRenderManager() {
-        return mNativeRenderer.getRenderManager();
+        if (mRender instanceof NativeRender) {
+            return ((NativeRender) mRender).getRenderManager();
+        }
+        return null;
     }
 
     @NonNull
@@ -173,7 +177,7 @@ public class ControllerManager {
         View view = mControllerRegistry.getView(id);
         if (view == null) {
             HippyViewController controller = mControllerRegistry.getViewController(className);
-            view = controller.createView(rootView, id, mNativeRenderer, className, props);
+            view = controller.createView(rootView, id, mRender, className, props);
             if (view != null) {
                 mControllerRegistry.addView(view);
             }
@@ -474,6 +478,6 @@ public class ControllerManager {
                 + ", parentClass=" + parentClass;
         NativeRenderException exception = new NativeRenderException(ADD_CHILD_VIEW_FAILED_ERR,
                 message);
-        mNativeRenderer.handleRenderException(exception);
+        mRender.handleRenderException(exception);
     }
 }

@@ -16,20 +16,14 @@
 
 package com.tencent.renderer.component.text;
 
-import static com.tencent.mtt.hippy.dom.node.NodeProps.IMAGE_CLASS_NAME;
-import static com.tencent.mtt.hippy.dom.node.NodeProps.TEXT_CLASS_NAME;
-import static com.tencent.renderer.NativeRenderException.ExceptionCode.INVALID_MEASURE_STATE_ERR;
-
 import android.text.Layout;
 import android.util.SparseArray;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.tencent.mtt.hippy.annotation.HippyControllerProps;
 import com.tencent.mtt.hippy.dom.node.NodeProps;
 import com.tencent.renderer.NativeRender;
 import com.tencent.renderer.NativeRenderException;
+import com.tencent.renderer.NativeRenderer;
 import com.tencent.renderer.utils.FlexUtils;
 import com.tencent.renderer.utils.FlexUtils.FlexMeasureMode;
 import com.tencent.renderer.utils.PropertyUtils;
@@ -43,6 +37,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import static com.tencent.mtt.hippy.dom.node.NodeProps.IMAGE_CLASS_NAME;
+import static com.tencent.mtt.hippy.dom.node.NodeProps.TEXT_CLASS_NAME;
+import static com.tencent.renderer.NativeRenderException.ExceptionCode.INVALID_MEASURE_STATE_ERR;
 
 public class VirtualNodeManager {
 
@@ -225,9 +226,10 @@ public class VirtualNodeManager {
                         PropertyUtils.convertProperty(methodHolder.paramTypes[0], props.get(key)));
             }
         } catch (Exception exception) {
-            mNativeRenderer.handleRenderException(
-                    PropertyUtils
-                            .makePropertyConvertException(exception, key, methodHolder.method));
+            if (mNativeRenderer instanceof NativeRenderer) {
+                ((NativeRenderer) mNativeRenderer).handleRenderException(
+                        PropertyUtils.makePropertyConvertException(exception, key, methodHolder.method));
+            }
         }
     }
 

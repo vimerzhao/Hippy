@@ -48,6 +48,7 @@ import com.tencent.mtt.hippy.utils.PixelUtil;
 import com.tencent.mtt.hippy.views.hippypager.HippyPager;
 import com.tencent.renderer.NativeRender;
 import com.tencent.renderer.NativeRenderException;
+import com.tencent.renderer.NativeRenderer;
 import com.tencent.renderer.NativeRendererManager;
 import com.tencent.renderer.utils.ArrayUtils;
 
@@ -506,8 +507,8 @@ public class HippyTextInputController extends HippyViewController<HippyTextInput
         } catch (Exception e) {
             final NativeRender nativeRenderer = NativeRendererManager
                     .getNativeRenderer(textInput.getContext());
-            if (nativeRenderer != null) {
-                nativeRenderer.handleRenderException(
+            if (nativeRenderer instanceof NativeRenderer) {
+                ((NativeRenderer) nativeRenderer).handleRenderException(
                         new NativeRenderException(HANDLE_CALL_UI_FUNCTION_ERR, e));
             }
         }

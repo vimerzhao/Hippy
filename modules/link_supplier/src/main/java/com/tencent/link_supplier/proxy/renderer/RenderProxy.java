@@ -20,10 +20,25 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.tencent.link_supplier.LinkHelper;
 import com.tencent.link_supplier.proxy.LinkProxy;
 import com.tencent.link_supplier.proxy.framework.FrameworkProxy;
 
+import java.util.List;
+
 public interface RenderProxy extends LinkProxy {
+
+
+    /**
+     * Initialize the renderer after call {@link LinkHelper} createRenderer interface.
+     *
+     * @param controllers framework instance id
+     * @param rootView the already exists root view, for example after reload in debug mode, root
+     * view will be reused.
+     */
+    void init(@Nullable List<Class<?>> controllers, @Nullable ViewGroup rootView);
 
     /**
      * Set framework proxy to renderer
@@ -46,4 +61,16 @@ public interface RenderProxy extends LinkProxy {
      * @param rootId root view id generate by {@link Linker}
      */
     void setRootId(int rootId);
+
+    /**
+     * Report render exception to host
+     *
+     * @param exception {@link Exception} the render exception
+     */
+    void handleRenderException(@NonNull Exception exception);
+
+    /**
+     * Return the custom view for the render
+     */
+    Object getCustomViewCreator();
 }

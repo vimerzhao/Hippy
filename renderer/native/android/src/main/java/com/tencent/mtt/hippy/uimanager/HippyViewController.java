@@ -28,6 +28,7 @@ import android.view.ViewParent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tencent.link_supplier.proxy.renderer.RenderProxy;
 import com.tencent.mtt.hippy.annotation.HippyControllerProps;
 import com.tencent.mtt.hippy.common.HippyArray;
 import com.tencent.mtt.hippy.common.HippyMap;
@@ -63,12 +64,12 @@ public abstract class HippyViewController<T extends View & HippyViewBase> implem
 
     @SuppressWarnings("deprecation")
     public View createView(@Nullable ViewGroup rootView, int id,
-            @NonNull NativeRender nativeRenderer, @NonNull String className,
-            @Nullable Map<String, Object> props) {
+                           @NonNull RenderProxy render, @NonNull String className,
+                           @Nullable Map<String, Object> props) {
         View view = null;
         if (rootView != null) {
             Context context = rootView.getContext();
-            Object object = nativeRenderer.getCustomViewCreator();
+            Object object = render.getCustomViewCreator();
             if (object instanceof HippyCustomViewCreator) {
                 view = ((HippyCustomViewCreator) object)
                         .createCustomView(className, context, props);

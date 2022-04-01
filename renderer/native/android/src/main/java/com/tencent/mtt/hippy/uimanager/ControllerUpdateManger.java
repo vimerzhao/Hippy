@@ -19,12 +19,13 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.tencent.link_supplier.proxy.renderer.RenderProxy;
 import com.tencent.mtt.hippy.annotation.HippyControllerProps;
 import com.tencent.mtt.hippy.dom.node.NodeProps;
 import com.tencent.mtt.hippy.utils.LogUtils;
 
 import com.tencent.mtt.hippy.views.custom.HippyCustomPropsController;
-import com.tencent.renderer.NativeRender;
 import com.tencent.renderer.utils.PropertyUtils;
 import com.tencent.renderer.utils.PropertyUtils.PropertyMethodHolder;
 import java.lang.reflect.Method;
@@ -39,11 +40,11 @@ public class ControllerUpdateManger<T, G> {
 
     private static final Map<Class, Map<String, PropertyMethodHolder>> CLASS_PROPS_METHOD = new HashMap<>();
     @NonNull
-    private final NativeRender mNativeRenderer;
+    private final RenderProxy mRender;
     private T customPropsController;
 
-    public ControllerUpdateManger(@NonNull NativeRender nativeRenderer) {
-        mNativeRenderer = nativeRenderer;
+    public ControllerUpdateManger(@NonNull RenderProxy render) {
+        mRender = render;
     }
 
     public void setCustomPropsController(T controller) {
@@ -118,9 +119,8 @@ public class ControllerUpdateManger<T, G> {
                 methodHolder.method.invoke(t, g, value);
             }
         } catch (Exception exception) {
-            mNativeRenderer.handleRenderException(
-                    PropertyUtils
-                            .makePropertyConvertException(exception, key, methodHolder.method));
+            mRender.handleRenderException(
+                    PropertyUtils.makePropertyConvertException(exception, key, methodHolder.method));
         }
     }
 
