@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: './mavencentral.gradle'
+apply plugin: 'com.kezong.fat-aar'
 
 ext {
   CMAKE_PATH = "$projectDir.absolutePath/src/main/jni/CMakeLists.txt"
@@ -170,12 +171,34 @@ android {
   }
 }
 
+afterEvaluate {
+  android.libraryVariants.all { variant ->
+    File outputFile = variant.outputs.first().outputFile
+    tasks.named("assemble${variant.name.capitalize()}").configure {
+      doLast {
+        copy {
+          from outputFile
+          into "../examples/android-demo/libs"
+          rename outputFile.name, "fat-aar-final.aar"
+        }
+      }
+    }
+  }
+}
+
+fataar {
+  transitive = true
+}
 dependencies {
   api fileTree(dir: 'libs', include: ['*.jar'])
-  compileOnly project(path: ':hippy-support')
-  compileOnly project(path: ':renderer-native')
-  compileOnly project(path: ':serialization')
-  compileOnly project(path: ':link_supplier')
+  //compileOnly project(path: ':hippy-support')
+  //compileOnly project(path: ':renderer-native')
+  //compileOnly project(path: ':serialization')
+  //compileOnly project(path: ':link_supplier')
+  embed project(path: ':hippy-support', configuration: 'default')
+  embed project(path: ':renderer-native', configuration: 'default')
+  embed project(path: ':serialization', configuration: 'default')
+  embed project(path: ':link_supplier', configuration: 'default')
   //noinspection GradleDependency
   implementation 'androidx.annotation:annotation:1.0.0'
   if (!INCLUDE_SUPPORT_UI.toBoolean()) {

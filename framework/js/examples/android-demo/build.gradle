@@ -99,19 +99,25 @@ allprojects {
         }
     }
 }
-
+repositories {
+    flatDir {
+        dirs 'libs/'
+    }
+}
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     if (verifyReleaseAar) {
-        // options for maven packages or local libs integration
-        // api 'com.tencent.hippy:hippy-common:2.11.2'
-        // api 'com.tencent.hippy:hippy-debug:2.11.2'
         api (name: 'android-sdk', ext: 'aar')
     } else {
-        api project(path: ':link_supplier')
-        api project(path: ':hippy-framework')
-        api project(path: ':hippy-support')
-        api project(path: ':renderer-native')
-        api project(path: ':serialization')
+        implementation(name: 'fat-aar-final', ext: 'aar')
+        // for native render
+        api 'androidx.recyclerview:recyclerview:1.1.0'
+        api 'androidx.viewpager:viewpager:1.0.0'
+//        compileOnly project(path: ':link_supplier')
+//        compileOnly project(path: ':hippy-framework')
+//        compileOnly project(path: ':hippy-support')
+//        compileOnly project(path: ':renderer-native')
+//        compileOnly project(path: ':serialization')
     }
     // noinspection GradleDependency
     api 'com.github.bumptech.glide:glide:3.6.1'
